@@ -1,18 +1,20 @@
-//#include <QCoreApplication>
+#include <QCoreApplication>
 #include <iostream>
 #include <cstdlib>
-#define nullptr NULL
+#include <time.h>
+#include <string>
+#define tam 15
 using namespace std;
 
-class LDDE;
+template<typename T> class LDDE;
 
-class No{
+template<typename T> class No{
 private:
-    int valor;
-    No* proxEnd;
-    No* endAnt;
+    T valor;
+    No<T>* proxEnd;
+    No<T>* endAnt;
 public:
-    No(int elemento){
+    No(T elemento){
         this->valor = elemento;
         this->proxEnd =nullptr;
         this->endAnt = nullptr;
@@ -20,46 +22,42 @@ public:
     ~No(){
         cout<<endl<<this->valor<<" foi deletado\n";
     }
-    int getValor(){
+    T getValor(){
         return this->valor;
     }
 
-    friend class LDDE;
+    friend class LDDE<T>;
 };
 
-class LDDE{
+template<typename T> class LDDE{
 private:
-    No* primeiro;
-    No* ultimo;
+    No<T>* primeiro;
+    No<T>* ultimo;
 
 public:
     LDDE():primeiro(nullptr), ultimo(nullptr){}
     ~LDDE(){
-        No* atual = primeiro;
-        No* backup = nullptr; //backup do proximo endereco;
+        No<T>* atual = primeiro;
+        No<T>* backup = nullptr; //backup do proximo endereco;
         while(atual){
             backup = atual->proxEnd;
             delete atual;
             atual = backup;
         }
     }
-    int getValor1(){
-        return primeiro->valor;
-    }
-    int getValorL(){
-        return ultimo->valor;
-    }
+    
+
     bool imprimir(){
-        No* atual = primeiro;
+        No<T>* atual = primeiro;
         if(!atual){
-            cout<<"lista vazia\n";
+            cout<<"\nlista vazia\n";
             return false;
         }
         int i=0;
         while(atual){
-           /* if(i%10 ==0)
+            if(i%10 ==0)
                 cout<<endl;
-            */cout<<atual->valor<<" ";
+            cout<<atual->valor<<" ";
             atual = atual->proxEnd;
             i++;
         }
@@ -67,8 +65,12 @@ public:
         return true;
     }
 
-    No *buscar(int elemento){
-        No *atual = primeiro;
+    No<T> *buscar(T elemento){
+        No<T> *atual = primeiro;
+        if(!atual){
+            cout<<"\nLista vazia\n";
+            return nullptr;
+        }
         while(atual && atual->valor < elemento)
             atual = atual->proxEnd;
         if(atual && atual->valor == elemento)
@@ -77,12 +79,12 @@ public:
         return nullptr;
     }
 
-    bool Remover(int elemento){
-        No *removido = buscar(elemento);
+    bool Remover(T elemento){
+        No<T> *removido = buscar(elemento);
         if(!removido)
             return false;
-        No *proximo = removido->proxEnd;
-        No *anterior = removido->endAnt;
+        No<T> *proximo = removido->proxEnd;
+        No<T> *anterior = removido->endAnt;
         if(anterior)
             anterior->proxEnd = proximo;
         else
@@ -95,12 +97,14 @@ public:
         return true;
     }
 
-    bool Inserir(int elemento){
-        No* novo = new No(elemento);
-        if(!novo)
+    bool Inserir(T elemento){
+        No<T>* novo = new No<T>(elemento);
+        if(!novo){
+            cout<<"\nNao foi possivel alocar a memoria\n";
             return false;
-       No *atual = primeiro;
-       No *anterior = nullptr;
+        }
+       No<T> *atual = primeiro;
+       No<T> *anterior = nullptr;
        while(atual && atual->valor < elemento){
             anterior = atual;
             atual = atual->proxEnd;
@@ -123,43 +127,83 @@ public:
     }
 };
 
-int main(int argc, char *argv[])
-{
-//    QCoreApplication a(argc, argv);
-    LDDE *lista = new LDDE();
-    int v[10];
-    for(int i=0;i<10;i++){
-        if(i%10 == 0)
+void listaString(){
+    LDDE<string> *lista = new LDDE<string>();
+    No<string> *buscado = lista->buscar("43");
+    lista->Inserir("Felipe");
+    lista->Inserir("Tiago");
+    lista->Inserir("Caio");
+    lista->Inserir("Paulo");
+
+    lista->Inserir("Andre");
+
+	lista->imprimir();
+  	buscado = lista->buscar("Felipe");
+    if(buscado){
+        cout<<"\n\nValor do buscado: "<<buscado->getValor();
+    }
+    buscado = lista->buscar("Geovani");
+
+    lista->Remover("499");
+    lista->Remover("Tiago");
+    lista->Remover("Caio");
+    lista->Remover("Andre");
+    lista->imprimir();
+    cout<<"\n\nInserindo de novo\n";
+    lista->Inserir("Bruno");
+    lista->Inserir("Marcos");
+    lista->imprimir();
+    system("Pause");
+    system("cls");
+    cout<<"Deletando lista\n";
+    delete lista;
+    cout<<"\nFinal LDDE String\n";
+    system("Pause");
+    system("cls");
+    
+}
+
+void listaNumerica(){
+    LDDE<float> *lista = new LDDE<float>();
+    No<float> *buscado = lista->buscar(500);
+    float v[tam];
+    cout<<"Valores para popular a lista\n";
+    for(int i=0;i<tam;i++){
+        if(i%(tam/2) == 0)
             cout<<endl;
-        v[i]= rand()%100;
+        v[i]= (rand()% (tam*20))*1.3;
         cout<<v[i]<<" ";
     }
-    lista->imprimir();
-
-    for(int i=0;i<10;i++){
+    for(int i=0;i<tam;i++){
         lista->Inserir(v[i]);
     }
 
-    cout<<endl<<"\nLista\n";
+    cout<<endl<<"\nLista";
     lista->imprimir();
 
-    No *buscado = lista->buscar(100);
-    if(buscado){
-        cout<<"\n\nValor do buscado: "<<buscado->getValor()<<"\nEnd do buscado: "<<buscado;
-    }
-    for(int i=0;i<10;i+=2){
+    buscado = lista->buscar(rand()% (tam*2)*1.3);
+    if(buscado)
+        cout<<"\n\nValor do buscado: "<<buscado->getValor();
+   for(int i=0;i<tam;i+=3){
         lista->Remover(v[i]);
-         lista->imprimir();
     }
-
-    lista->Remover(0);
-    lista->Inserir(1);
-    lista->Inserir(34);
-    lista->Inserir(100);
+    lista->Remover(rand()% (tam*2)*1.3);
+    cout<<endl<<"\nLista";
     lista->imprimir();
-
-    delete lista;
     system("Pause");
-    return 0;
-//    return a.exec();
+    system("cls");
+    cout<<"Deletando lista\n";
+    delete lista;
+    cout<<"\nFinal LDDE Numerica\n";
+    system("Pause");
+    system("cls");
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+    srand(time(nullptr));
+    listaString();
+    listaNumerica();
+    return a.exec();
 }
