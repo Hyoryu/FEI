@@ -1,14 +1,10 @@
 #include <cstdlib>
 #include <iostream>
+#include <string>
+#include <time.h>
+#define tam 20
 
 using namespace std;
-/***
-	Lista Dinamica encadeada
-	criado por: Hyoryu 14/03/18
-	ultima edicao: Hyoryu 16/03/2018
-	
-	
-***/
 
 template <typename T> class LDE;
 template <typename T> 
@@ -23,7 +19,7 @@ public:
 	No(T elemento): valor(elemento), proxEnd(NULL){
 	}
 	~No(){
-		cout<<endl<<valor <<" foi deletado";
+		cout<<endl<<valor <<" foi deletado\n";
 	}
 	friend class LDE<T>;
 };
@@ -123,32 +119,73 @@ public:
         }
         int i=0;
         while(atual){
-            if(i%10 ==0)
+            if(i% (tam/2) == 0)
                 cout<<endl;
             cout<<atual->valor<<" ";
             atual = atual->proxEnd;
             i++;
         }
+        cout<<endl;
         return true;
 	}
 };
-int main(int argc, char const *argv[])
-{
-	LDE<int> lista;
-	int v[20];
-	for(int i=0;i<20;i++){
-		if(i%10 == 0)
+
+void listaNumerica(){
+	LDE<int> *lista = new LDE<int>();
+	int v[tam];
+	cout<<"\nvalores vetor: \n";
+	for(int i=0;i<tam;i++){
+		if(i% (tam/2) == 0)
 			cout<<endl;
-		v[i]= rand()%100;
+		v[i]= rand()% (tam*100)*1.3;
 		cout<<v[i]<<" ";
 	}
-	cout<<"\n\n";
-	for(int i=0;i<20;i++)
-		lista.inserir(v[i]);
-	lista.imprimir();
-	for(int i=0;i<20;i++)
-		lista.remover(v[i]);
-    lista.imprimir();
+	cout<<"\n\nLista\n";
+	for(int i=0;i<tam;i++)
+		lista->inserir(v[i]);
+	lista->imprimir();
+	for(int i=0;i<tam;i+=3)
+		lista->remover(v[i]);
+    lista->imprimir();
 	system("pause");
+	system("cls");
+	cout<<"Deletando lista\n";
+	delete lista;
+	system("pause");
+	system("cls");
+}
+
+void listaString(){
+	LDE<string> *lista = new LDE<string>();
+	lista->buscar("fdjl");
+	lista->remover("rdf");
+	lista->inserir("Tiago");
+	lista->inserir("Michelle");
+	lista->inserir("Vader");
+	lista->inserir("Fabio");
+	lista->inserir("Andreia");
+	lista->inserir("Renata");
+	cout<<"\nImprimindo lista\n";
+	lista->imprimir();
+	lista->remover("Vader");
+	lista->remover("Michelle");
+	lista->remover("Andreia");
+	lista->imprimir();
+	
+	system("pause");
+	system("cls");
+	
+	cout<<"Deletando lista\n";
+	delete lista;
+	
+	system("pause");
+	system("cls");
+}
+
+int main(int argc, char const *argv[])
+{
+	srand(time(NULL));
+	listaNumerica();
+	listaString();
 	return 0;
 }
