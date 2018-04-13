@@ -16,21 +16,20 @@ public:
 	}
 	
 	bool empilhar(T valor){
-		if(fim+1 == tam ){
-			cout<<"\nPilha cheia\n";
-			return false;
+		if(fim < tam ){
+            v[fim] = valor;
+			fim++;
+			return true;
 		}
-		v[fim] = valor;
-		fim++;
-		return true;
+		cout<<"\nPilha cheia\n";
+			return false;
 	}
 	bool desempilhar(T &valor){
-		if(fim <0){
+		if(fim-1 <0){
 			cout<<"\nPilha vazia\n";
 			return false;
 		}
-		valor = v[fim];
-		fim--;
+		valor = v[--fim];
 		return true;
 	}
 
