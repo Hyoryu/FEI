@@ -1,0 +1,23 @@
+$io8051.h
+
+main org 0h
+	ljmp 100h
+maior_valor	org 100h
+	mov 20h,#0h //maior valor
+	mov 21h,#5h //largura da faixa. Nesse exemplo, vou colocar 5h
+	mov r1,21h //pega o conteudo de 21h
+	mov r0,#22h //armazena o inicio da faixa de memoria
+	mov 22h, #10h //inicio da faixa de memoria. Faixa de memoria = (22+5-1)h = 26h
+	mov 23h, #2h
+	mov 24h, #8h
+	mov 25h, #15h
+	mov 26h, #6h
+Compara clr c
+		mov a, 20h
+		subb a,@r0
+		jnc, Pula
+		mov 20h, @r0
+Pula inc r0
+		djnz r1,Compara
+	sjmp $
+	end main
