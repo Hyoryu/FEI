@@ -21,7 +21,7 @@ function mergeSort(array){
 
 		return merge(mergeSort(esquerda), mergeSort(direita));
 	}catch (erro){
-		console.log(`Deu merda: ${erro}`);
+		console.error(`Deu merda: ${erro}`);
 	}
 }
 
